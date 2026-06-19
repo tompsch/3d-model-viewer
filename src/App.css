@@ -1,18 +1,30 @@
 .dropZone {
   height: 100%;
   width: 100%;
-  border: 1px solid grey;
-  border-style: dashed;
+  border: 1px dashed grey;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  text-align: center;
+  /* box-sizing: border-box;
+  padding: 4rem; */
+}
+.dropZone.noDrag {
+    border: 1px solid grey;
+}
+.dropZone > * {
+  padding: 0.5rem;
+}
+.checkbox {
+  display: flex;
+  gap: 0.5rem;
 }
 .dropZone:hover {
   cursor: pointer;
 }
 
-.dropZone input {
+.fileFolderInput {
   display: none;
 }
 

@@ -6,17 +6,31 @@ import { DRACOLoader } from 'three/examples/jsm/Addons.js';
 import { Environment, OrbitControls, Html, useProgress } from '@react-three/drei';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 import './App.css'
+import type { Url } from './App';
 
-function Model ({url, controlsRef} : {url: string, controlsRef: React.RefObject<OrbitControlsImpl | null>}) {
+
+function Model ({url, controlsRef} : {url: string | Record<string,string>, controlsRef: React.RefObject<OrbitControlsImpl | null>}) {
     const groupRef = useRef<THREE.Group>(null!);
     const { camera, size } = useThree();
 
-    const gltf = useLoader(GLTFLoader, url, (loader)=>{
+    const gltfFileName = typeof url === 'string' ? null : Object.keys(url).find(name => name.match(/\.gltf$/i))!;
+    const gltfUrl = typeof url === 'string' ? url : url[gltfFileName!];
+    const gltf = useLoader(GLTFLoader, gltfUrl, (loader)=>{
+
         const dracoLoader = new DRACOLoader();
         dracoLoader.setDecoderPath('/draco/');
         loader.setDRACOLoader(dracoLoader);
-    })
 
+        if(typeof url !== 'string') {
+            loader.manager.setURLModifier((fileUrl) => {
+            const fileName = fileUrl.split(/[\\/]/).pop()!;
+            return url[fileName] ?? fileUrl;
+        })
+        }
+    })
+    // useEffect(()=>{
+    //     return () => useLoader.clear(GLTFLoader, gltfUrl);
+    // })
     useEffect(()=>{
         if(!groupRef.current) return;
 
@@ -40,6 +54,7 @@ function Model ({url, controlsRef} : {url: string, controlsRef: React.RefObject<
             controlsRef.current.update();
         }
     }, [gltf, size])
+    
     return (<primitive ref={groupRef} object={gltf.scene}/>)
 }
 
@@ -52,7 +67,7 @@ function CameraLight () {
             lightRef.current.position.copy(camera.position);
         }
     })
-    return <directionalLight ref={lightRef} intensity={0.5} />
+    return <directionalLight ref={lightRef} intensity={0.2} />
 }
 
 function Fallback () {
@@ -60,7 +75,7 @@ function Fallback () {
     return (<Html center><p>{`Loading: ${Math.round(progress)}%`}</p></Html>)
 }
 
-export default function Viewer ({url}: {url: string | null}) {
+export default function Viewer ({url}: {url: Url}) {
     const controlsRef = useRef<OrbitControlsImpl>(null);
     return (
         <div id="canvas">
@@ -69,10 +84,10 @@ export default function Viewer ({url}: {url: string | null}) {
                 style={{ width: '100%', height: '100%' }}
             >
                 <Environment preset="warehouse" />
-                <ambientLight intensity={0.5} />
+                <ambientLight intensity={0.2} />
                 <CameraLight />
                 <Suspense fallback={<Fallback />}>
-                    {url && <Model url={url} controlsRef={controlsRef}/>}
+                    {url && <Model url={url.url} key={url.key} controlsRef={controlsRef}/>}
                 </Suspense>
                 <OrbitControls
                     enablePan={false}
