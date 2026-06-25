@@ -1,5 +1,5 @@
 import './App.css'
-import { use, useEffect, useState } from 'react';
+import { useState } from 'react';
 import Viewer from './Viewer';
 import InputForm from './InputForm';
 
@@ -22,7 +22,7 @@ function App() {
           {fileURL && <Viewer url={fileURL}/>}
         </section>
         <section className={fileURL ? 'shrinkedForm' : 'regularForm'}>
-          <InputForm setter={setFileURL}/>
+          <InputForm setter={setFileURL} viewingModel={fileURL ? true : false}/>
         </section>
       </main>
     </>

@@ -1,17 +1,19 @@
 .dropZone {
   height: 100%;
   width: 100%;
-  border: 1px dashed grey;
+  border: 1px dashed var(--border);
+  background-color: var(--bg-secondary);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  /* box-sizing: border-box;
-  padding: 4rem; */
+  border-radius: var(--radius);
 }
 .dropZone.noDrag {
-    border: 1px solid grey;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+
 }
 .dropZone > * {
   padding: 0.5rem;
@@ -38,16 +40,28 @@
 #canvas {
   width: 100%;
   height: 100%;
+  position: relative;
   /* border: 1px solid red; */
-
+}
+#canvas p {
+  /* display: none; */
+  /* justify-content: center; */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: -1;
+  /* border: 1px solid red; */
 }
 section.noCanvas {
   display: none;
 }
 section.canvasSection {
-  width: 100%;
+  width: 80%;
   height: 50vh;
-  /* border: 1px solid gray; */
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+
 }
 section.regularForm {
   width: 50vw;
@@ -59,6 +73,55 @@ form {
   width: 100%;
 }
 section.shrinkedForm {
-  width: 50vw;
-  height: 200px;
+  width: 80%;
+  /* height: 200px; */
+}
+.newInputContainer {
+  display: grid;
+  /* outline: 1px solid red; */
+  grid-template-columns: 4fr 1fr;
+  grid-template-rows: 3rem 3rem;
+  row-gap: 1rem;
+  column-gap: 1rem;
+  margin: 1rem 0;
+}
+.newInputContainer > div {
+  border-radius: var(--radius);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 1rem;
+  border: 1px solid var(--border);
+  gap: 0.5rem;
+}
+.newInputContainer label {
+  cursor: pointer;
+}
+.newInputContainer img {
+  width: 24px;
+  /* outline: 1px solid red; */
+
+}
+div.fileInputContainer {
+  grid-row: 1 / 1;
+  grid-column: 1 / 1;
+  /* outline: 1px solid blue; */
+  background-color: var(--text-primary);
+  color: var(--bg-primary);
+  justify-content: center;
+  cursor: pointer;
+}
+div.folderInputContainer {
+  grid-row: 1 / 1;
+  grid-column: 2 / 2;
+  cursor: pointer;
+}
+div.fileNameContainer {
+  grid-row: 2 / 2;
+  grid-column: 1 / span 2;
+  /* outline: 1px solid orange; */
+  justify-content: flex-start;
+}
+.fileNameContainer span {
+  color: var(--text-secondary)
 }

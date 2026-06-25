@@ -1,10 +1,21 @@
 :root {
-    font-family: "Google Sans", sans-serif;
-    font-optical-sizing: auto;
-    font-weight: 400;
-    font-style: normal;
-    font-variation-settings:
-      "GRAD" 0;
+  font-family: "Google Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings:
+    "GRAD" 0;
+
+  --bg-primary: #FAFAF9;
+  --bg-secondary: #F0F0EE;
+  --text-primary: #1C1C1A;
+  --text-secondary: #8A8A85;
+  --border: #D4D4D0;
+  --accent: #3D7A5C;
+  --radius: 16px;
+
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
 }
 
 @media (prefers-color-scheme: dark) {

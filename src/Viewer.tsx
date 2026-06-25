@@ -71,8 +71,11 @@ function CameraLight () {
 }
 
 function Fallback () {
-    const { progress } = useProgress();
-    return (<Html center><p>{`Loading: ${Math.round(progress)}%`}</p></Html>)
+    const { progress, active } = useProgress();
+    // console.log(Math.round(progress))
+    // return (<Html center><p>{`Loading: ${Math.round(progress)}%`}</p></Html>)
+    if(!active || progress === 100) return;
+    return <p>{`Loading: ${Math.round(progress)}%`}</p>
 }
 
 export default function Viewer ({url}: {url: Url}) {
@@ -86,7 +89,8 @@ export default function Viewer ({url}: {url: Url}) {
                 <Environment preset="warehouse" />
                 <ambientLight intensity={0.2} />
                 <CameraLight />
-                <Suspense fallback={<Fallback />}>
+                {/* <Suspense fallback={<Fallback />}> */}
+                <Suspense fallback={null}>
                     {url && <Model url={url.url} key={url.key} controlsRef={controlsRef}/>}
                 </Suspense>
                 <OrbitControls
@@ -99,6 +103,7 @@ export default function Viewer ({url}: {url: Url}) {
                     ref={controlsRef}
                 />
             </Canvas>
+            <Fallback />
         </div>
     )
 }

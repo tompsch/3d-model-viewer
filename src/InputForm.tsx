@@ -1,13 +1,19 @@
 import { useState, useRef } from 'react'
 import './App.css'
 import type { Url } from './App';
+import upload from "./assets/upload.svg"
+import folder from "./assets/folder.svg"
+import ar_view from "./assets/ar_view.svg"
+import drop from "./assets/rotate-3d.svg"
 
-export default function InputForm ({setter}: {setter: React.Dispatch<React.SetStateAction<Url>>}) {
+export default function InputForm ({setter, viewingModel}: {setter: React.Dispatch<React.SetStateAction<Url>>, viewingModel: boolean}) {
     const fileInput = useRef<HTMLInputElement>(null);
     const folderInput = useRef<HTMLInputElement>(null);
     const [isDragging, setIsDragging] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
     const [folderInputCheckbox, setFolderInputCheckbox] = useState<boolean>(false);
+    const [fileName, setFileName] = useState<string | null>(null);
+    const [fileSize, setFileSize] = useState<string>('0');
 
     const processFiles = (files: FileList) => {
         if (files.length === 1) {
@@ -26,6 +32,8 @@ export default function InputForm ({setter}: {setter: React.Dispatch<React.SetSt
             }
             setError(null);
             const url = URL.createObjectURL(file);
+            setFileName(file.name)
+            setFileSize((file.size / 1024 / 1024).toFixed(1))
             setter(
                 {
                     url: url,
@@ -52,6 +60,7 @@ export default function InputForm ({setter}: {setter: React.Dispatch<React.SetSt
             return;
         }
         const key = URL.createObjectURL(gltfFiles[0]);
+        setFileName(gltfFiles[0].name)
         setter({
             url: urlMap,
             key: key
@@ -82,22 +91,9 @@ export default function InputForm ({setter}: {setter: React.Dispatch<React.SetSt
     const handleCheckbox = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFolderInputCheckbox(e.target.checked)
     }
+    const FileInput = () => {
         return(
-            <form>
-                <div className={`dropZone${isDragging ? ' dragging' : ''}${folderInputCheckbox ? ' noDrag' : ''}`}
-                    onClick={()=>{
-                        !folderInputCheckbox ? fileInput.current?.click() : folderInput.current?.click()}}
-                    onDragOver={!folderInputCheckbox ? handleDragOver : undefined}
-                    onDragLeave={!folderInputCheckbox ? handleDragLeave : undefined}
-                    onDrop={!folderInputCheckbox ? handleDrop : undefined}
-                >
-                    <label htmlFor='fileInput' className={folderInputCheckbox ? 'fileFolderInput' : ''}>
-                        Select 3D files
-                    </label>
-                    <label htmlFor='folderInput' className={!folderInputCheckbox ? 'fileFolderInput' : ''}>
-                        Select a folder with 3D files
-                    </label>
-                    <input
+            <input
                         ref={fileInput}
                         type="file"
                         id="fileInput"
@@ -106,8 +102,12 @@ export default function InputForm ({setter}: {setter: React.Dispatch<React.SetSt
                         onChange={handleChange}
                         // accept=".glb,.gltf"
                         multiple
-                        />
-                    <input
+            />
+        )
+    }
+    const FolderInput = () => {
+        return(
+            <input
                         ref={folderInput}
                         type="file"
                         id="folderInput"
@@ -115,8 +115,29 @@ export default function InputForm ({setter}: {setter: React.Dispatch<React.SetSt
                         name="folderInput"
                         onChange={handleChange}
                         {...{webkitdirectory: ''}}
-                        />
-                    <p>{!folderInputCheckbox ? 'Drag here or click to select' : 'Click to select'}</p>
+            />
+        )
+    }
+        return(
+            !viewingModel ? <form>
+                <div className={`dropZone${isDragging ? ' dragging' : ''}${folderInputCheckbox ? ' noDrag' : ''}`}
+                    onClick={()=>{
+                        !folderInputCheckbox ? fileInput.current?.click() : folderInput.current?.click()}}
+                    onDragOver={!folderInputCheckbox ? handleDragOver : undefined}
+                    onDragLeave={!folderInputCheckbox ? handleDragLeave : undefined}
+                    onDrop={!folderInputCheckbox ? handleDrop : undefined}
+                >
+                    <img src={drop} />
+                    <label htmlFor='fileInput' className={folderInputCheckbox ? 'fileFolderInput' : ''}>
+                        Select 3D files
+                    </label>
+                    <FileInput />
+                    <label htmlFor='folderInput' className={!folderInputCheckbox ? 'fileFolderInput' : ''}>
+                        Select a folder with 3D files
+                    </label>
+                    <FolderInput />
+                    
+                    <p>{!folderInputCheckbox ? 'Drag or click here to upload' : 'Click to upload'}</p>
                     <p> ( .glb | .gltf )</p>
                     <div className='checkbox'>
                         <label htmlFor='webkitdirectory' onClick={(e)=>e.stopPropagation()}>
@@ -127,5 +148,29 @@ export default function InputForm ({setter}: {setter: React.Dispatch<React.SetSt
                 </div>
                 {error && <p className='error'>{error}</p>}
             </form>
+        :
+        <form>
+            <div className='newInputContainer'>
+                <div className='fileInputContainer' onClick={()=>fileInput.current?.click()}>
+                    <img src={upload} />
+                    <label htmlFor='fileInput'>
+                        Select file
+                    </label>
+                    <FileInput />   
+                </div>
+                <div className='folderInputContainer' onClick={()=>folderInput.current?.click()}>
+                    <img src={folder} />
+                    <label htmlFor='folderInput'>
+                        Select folder
+                    </label>
+                    <FolderInput />
+                </div>
+                <div className='fileNameContainer'>
+                    <img src={ar_view} />
+                    <p>{fileName}</p>
+                    <span>{fileSize + ' MB'}</span>    
+                </div>
+            </div>
+        </form>
         )
 }
