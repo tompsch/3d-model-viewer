@@ -129,7 +129,7 @@ export default function InputForm ({setter, viewingModel}: {setter: React.Dispat
                 >
                     <img src={drop} />
                     <label htmlFor='fileInput' className={folderInputCheckbox ? 'fileFolderInput' : ''}>
-                        Select 3D files
+                        Select 3DX files
                     </label>
                     <FileInput />
                     <label htmlFor='folderInput' className={!folderInputCheckbox ? 'fileFolderInput' : ''}>
