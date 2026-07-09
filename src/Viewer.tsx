@@ -70,15 +70,18 @@ function CameraLight () {
     return <directionalLight ref={lightRef} intensity={0.2} />
 }
 
-function Fallback () {
+function Fallback ({setStatus}: {setStatus: React.Dispatch<React.SetStateAction<number>>}) {
     const { progress, active } = useProgress();
+    useEffect(()=>{
+        setStatus(progress);
+    },[progress])
     // console.log(Math.round(progress))
     // return (<Html center><p>{`Loading: ${Math.round(progress)}%`}</p></Html>)
     if(!active || progress === 100) return;
     return <p>{`Loading: ${Math.round(progress)}%`}</p>
 }
 
-export default function Viewer ({url}: {url: Url}) {
+export default function Viewer ({url, setStatus}: {url: Url, setStatus: React.Dispatch<React.SetStateAction<number>>}) {
     const controlsRef = useRef<OrbitControlsImpl>(null);
     return (
         <div id="canvas">
@@ -103,7 +106,7 @@ export default function Viewer ({url}: {url: Url}) {
                     ref={controlsRef}
                 />
             </Canvas>
-            <Fallback />
+            <Fallback setStatus={setStatus}/>
         </div>
     )
 }

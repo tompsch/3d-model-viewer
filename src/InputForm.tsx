@@ -44,10 +44,13 @@ export default function InputForm ({setter, viewingModel}: {setter: React.Dispat
         }
         const urlMap: Record<string, string> = {};
 
+        let multipleFileSize = 0;
         for (const file of files) {
             // if (!file.name.match(/\.gltf$/i)) 
             urlMap[file.name] = URL.createObjectURL(file);
+            multipleFileSize += file.size; 
         }
+        setFileSize((multipleFileSize / 1024 / 1024).toFixed(1));
 
         const gltfFiles = Array.from(files).filter(f => f.name.match(/\.gltf$/i));
 
@@ -127,9 +130,9 @@ export default function InputForm ({setter, viewingModel}: {setter: React.Dispat
                     onDragLeave={!folderInputCheckbox ? handleDragLeave : undefined}
                     onDrop={!folderInputCheckbox ? handleDrop : undefined}
                 >
-                    <img src={drop} />
+                    <img src={!folderInputCheckbox ? drop : folder} width={60} height={60}/>
                     <label htmlFor='fileInput' className={folderInputCheckbox ? 'fileFolderInput' : ''}>
-                        Select 3DX files
+                        Select 3D files
                     </label>
                     <FileInput />
                     <label htmlFor='folderInput' className={!folderInputCheckbox ? 'fileFolderInput' : ''}>
@@ -137,7 +140,7 @@ export default function InputForm ({setter, viewingModel}: {setter: React.Dispat
                     </label>
                     <FolderInput />
                     
-                    <p>{!folderInputCheckbox ? 'Drag or click here to upload' : 'Click to upload'}</p>
+                    <p>{!folderInputCheckbox ? 'Drag here or click to upload' : 'Click to upload'}</p>
                     <p> ( .glb | .gltf )</p>
                     <div className='checkbox'>
                         <label htmlFor='webkitdirectory' onClick={(e)=>e.stopPropagation()}>
