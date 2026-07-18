@@ -39,9 +39,9 @@ function App() {
         </section>
       </main>
       <footer className={fileURL ? 'shrinkedFooter' : 'regularFooter'}>
-        <h3>Tomás Puebla Schildknecht</h3>
-        <h4><a href='http://tompsch.dev'>tompsch.dev</a></h4>
-        <p><a href='mailto:hello@tompsch.dev'>Contact me!</a></p>
+        <div><h3>Tomás Puebla Schildknecht</h3></div>
+        <div><h4><a href='http://tompsch.dev'>tompsch.dev</a></h4></div>
+        <div><h4><a href='mailto:hello@tompsch.dev'>Contact me!</a></h4></div>
       </footer>
     </>
   )
