@@ -49,7 +49,7 @@
   border-radius: var(--radius);
   /* border: 1px solid red; */
 }
-#canvas p {
+#canvas > p {
   /* display: none; */
   /* justify-content: center; */
   position: absolute;
@@ -58,6 +58,30 @@
   transform: translate(-50%, -50%);
   /* z-index: -1; */
   /* border: 1px solid red; */
+}
+#canvas form {
+  position: absolute;
+  top: 4%;
+  left: 2%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 20%;
+  row-gap: 0.8rem;
+  /* height: 50%; */
+  height: min-content;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background-color: var(--bg-primary);
+  padding: 1rem;
+}
+#canvas form p {
+  align-self: center;
+  text-align: center;
+  font-size: 0.8rem;
+}
+.hide > *:not(p) {
+  display: none;
 }
 section.noCanvas {
   display: none;

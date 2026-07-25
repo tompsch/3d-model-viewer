@@ -1,9 +1,9 @@
 import * as THREE from 'three'
-import { useEffect, useRef, Suspense, useState, use } from 'react';
+import { useEffect, useRef, Suspense, useState } from 'react';
 import { Canvas, useLoader, useThree, useFrame } from '@react-three/fiber';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/examples/jsm/Addons.js';
-import { Environment, OrbitControls, Html, useProgress } from '@react-three/drei';
+import { Environment, OrbitControls, useProgress } from '@react-three/drei';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 import './App.css'
 import type { Url } from './App';
@@ -81,24 +81,12 @@ function Fallback ({setStatus}: {setStatus: React.Dispatch<React.SetStateAction<
     return <p>{`Loading: ${Math.round(progress)}%`}</p>
 }
 
-function CameraController () {
-    const { camera } = useThree();
-    const [cameraPos,setCameraPos]= useState<{position: [number,number,number], fov: number}>({position: [3, 2, 5], fov: 45});
-
-    useEffect(()=>{
-        if (camera instanceof THREE.PerspectiveCamera) {
-            setCameraPos({position: [camera.position.x, camera.position.y, camera.position.z], fov: camera.fov});
-        }
-    }, [camera])
-
-}
-
 export default function Viewer ({url, setStatus}: {url: Url, setStatus: React.Dispatch<React.SetStateAction<number>>}) {
     const controlsRef = useRef<OrbitControlsImpl>(null);
     const [enviroment, setEnviroment] = useState('/hdri/empty_warehouse_01_1k.hdr');
     const [ambientLight, setAmbientLight] = useState(0.2);
     const [directionalLight, setDirectionalLight] = useState(0.2);
-
+    const [displayControls, setDisplayControls] = useState(true);
 
     const handleEnviroment = (e: React.ChangeEvent<HTMLSelectElement>) => {
         if (!e.target.value) {
@@ -115,21 +103,22 @@ export default function Viewer ({url, setStatus}: {url: Url, setStatus: React.Di
         setDirectionalLight(parseFloat(e.target.value));
     }
 
-    return (
-        <div id="canvas">
-            <Canvas
-                camera={{ position: cameraPos.position, fov: cameraPos.fov }}
-                style={{ width: '100%', height: '100%' }}
-            >
-                {/* <Environment preset={enviroment} /> */}
-                {enviroment && <Environment files={enviroment} />}
-                <ambientLight intensity={ambientLight} />
-                <CameraLight intensity={directionalLight} />
-                {/* <Suspense fallback={<Fallback />}> */}
-                <Suspense fallback={null}>
-                    {url && <Model url={url.url} key={url.key} controlsRef={controlsRef}/>}
-                </Suspense>
-                <OrbitControls
+    const savedPosition = useRef<null | THREE.Vector3>(null);
+
+    const CameraControls = () => {
+        const { camera } = useThree();
+        
+        const handleOrbitChange = () => {
+            savedPosition.current = camera.position.clone();
+        }
+
+        useEffect(()=>{
+            if(savedPosition.current) {
+                camera.position.copy(savedPosition.current);
+            }
+        },[])
+        return (
+            <OrbitControls
                     enablePan={false}
                     target={[0, 0, 0]}
                     enableDamping
@@ -137,11 +126,28 @@ export default function Viewer ({url, setStatus}: {url: Url, setStatus: React.Di
                     minPolarAngle={Math.PI * 0}
                     maxPolarAngle={Math.PI * 1}
                     ref={controlsRef}
-                />
+                    onChange={handleOrbitChange}
+            />
+        )
+    } 
+    return (
+        <div id="canvas">
+            <Canvas
+                camera={{ position: [3, 2, 5], fov: 45 }}
+                style={{ width: '100%', height: '100%' }}
+            >
+                {enviroment && <Environment files={enviroment} />}
+                <ambientLight intensity={ambientLight} />
+                <CameraLight intensity={directionalLight} />
+                <Suspense fallback={null}>
+                    {url && <Model url={url.url} key={url.key} controlsRef={controlsRef}/>}
+                </Suspense>
+                <CameraControls />
             </Canvas>
             <Fallback setStatus={setStatus}/>
-            <form>
-                <select onChange={handleEnviroment}>
+            <form className={displayControls ? 'show' : 'hide'}>
+                <label htmlFor="enviroment">Enviroment</label>
+                <select name='enviroment' onChange={handleEnviroment}>
                     <option value="empty_warehouse_01_1k">Warehouse</option>
                     <option value="studio_small_03_1k">Studio</option>
                     <option value="venice_sunset_1k">Sunset</option>
@@ -167,6 +173,7 @@ export default function Viewer ({url, setStatus}: {url: Url, setStatus: React.Di
                     step="0.1"
                     onChange={handleDirectionalLight}>
                 </input>
+                <p onClick={()=>setDisplayControls(!displayControls)}>{displayControls ? 'collapse' : 'show controls'}</p>
             </form>
         </div>
     )
