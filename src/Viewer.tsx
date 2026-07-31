@@ -7,14 +7,17 @@ import { Environment, OrbitControls, useProgress } from '@react-three/drei';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 import './App.css'
 import type { Url } from './App';
+import tune from './assets/tune.svg'
+import arrow from './assets/arrow_up.svg'
 
 
 function Model ({url, controlsRef} : {url: string | Record<string,string>, controlsRef: React.RefObject<OrbitControlsImpl | null>}) {
     const groupRef = useRef<THREE.Group>(null!);
-    const { camera, size } = useThree();
+    const { camera } = useThree();
 
     const gltfFileName = typeof url === 'string' ? null : Object.keys(url).find(name => name.match(/\.gltf$/i))!;
     const gltfUrl = typeof url === 'string' ? url : url[gltfFileName!];
+    
     const gltf = useLoader(GLTFLoader, gltfUrl, (loader)=>{
 
         const dracoLoader = new DRACOLoader();
@@ -30,7 +33,7 @@ function Model ({url, controlsRef} : {url: string | Record<string,string>, contr
     })
     // useEffect(()=>{
     //     return () => useLoader.clear(GLTFLoader, gltfUrl);
-    // })
+    // },[url])
     useEffect(()=>{
         if(!groupRef.current) return;
 
@@ -53,7 +56,7 @@ function Model ({url, controlsRef} : {url: string | Record<string,string>, contr
             controlsRef.current.target.set(0, 0, 0);
             controlsRef.current.update();
         }
-    }, [gltf, size])
+    }, [gltf])
     
     return (<primitive ref={groupRef} object={gltf.scene}/>)
 }
@@ -71,13 +74,11 @@ function CameraLight ({intensity}: {intensity: number}) {
 }
 
 function Fallback ({setStatus}: {setStatus: React.Dispatch<React.SetStateAction<number>>}) {
-    const { progress, active } = useProgress();
+    const { progress, active, loaded, total } = useProgress();
     useEffect(()=>{
         setStatus(progress);
     },[progress])
-    // console.log(Math.round(progress))
-    // return (<Html center><p>{`Loading: ${Math.round(progress)}%`}</p></Html>)
-    if(!active || progress === 100) return;
+    if(!active || progress >= 100 || total === 0) return;
     return <p>{`Loading: ${Math.round(progress)}%`}</p>
 }
 
@@ -87,7 +88,6 @@ export default function Viewer ({url, setStatus}: {url: Url, setStatus: React.Di
     const [ambientLight, setAmbientLight] = useState(0.2);
     const [directionalLight, setDirectionalLight] = useState(0.2);
     const [displayControls, setDisplayControls] = useState(true);
-
     const handleEnviroment = (e: React.ChangeEvent<HTMLSelectElement>) => {
         if (!e.target.value) {
             setEnviroment('');
@@ -139,9 +139,11 @@ export default function Viewer ({url, setStatus}: {url: Url, setStatus: React.Di
                 {enviroment && <Environment files={enviroment} />}
                 <ambientLight intensity={ambientLight} />
                 <CameraLight intensity={directionalLight} />
-                <Suspense fallback={null}>
-                    {url && <Model url={url.url} key={url.key} controlsRef={controlsRef}/>}
-                </Suspense>
+                <group key={url?.key}>
+                    <Suspense fallback={null}>
+                        {url && <Model url={url.url} key={url.key} controlsRef={controlsRef}/>}
+                    </Suspense>
+                </group>
                 <CameraControls />
             </Canvas>
             <Fallback setStatus={setStatus}/>
@@ -173,7 +175,11 @@ export default function Viewer ({url, setStatus}: {url: Url, setStatus: React.Di
                     step="0.1"
                     onChange={handleDirectionalLight}>
                 </input>
-                <p onClick={()=>setDisplayControls(!displayControls)}>{displayControls ? 'collapse' : 'show controls'}</p>
+                <div className="controlToggle" onClick={()=>setDisplayControls(!displayControls)}>
+                    {displayControls ?
+                    <><img src={arrow} alt="Arrow" width="28" height="28"/></> :
+                    <><img src={tune} alt="Tune" width="20" height="20"/><p>show controls</p></>
+                }</div>
             </form>
         </div>
     )

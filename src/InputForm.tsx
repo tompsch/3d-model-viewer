@@ -6,14 +6,14 @@ import folder from "./assets/folder.svg"
 import ar_view from "./assets/ar_view.svg"
 import drop from "./assets/rotate-3d.svg"
 
-export default function InputForm ({setter, viewingModel}: {setter: React.Dispatch<React.SetStateAction<Url>>, viewingModel: boolean}) {
+export default function InputForm ({setter, viewingModel, fileName, fileNameSetter, fileSize, setFileSize}: {setter: React.Dispatch<React.SetStateAction<Url>>, viewingModel: boolean, fileName: string | null, fileNameSetter: React.Dispatch<React.SetStateAction<string | null>>, fileSize: string, setFileSize: React.Dispatch<React.SetStateAction<string>>}) {
     const fileInput = useRef<HTMLInputElement>(null);
     const folderInput = useRef<HTMLInputElement>(null);
     const [isDragging, setIsDragging] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
     const [folderInputCheckbox, setFolderInputCheckbox] = useState<boolean>(false);
-    const [fileName, setFileName] = useState<string | null>(null);
-    const [fileSize, setFileSize] = useState<string>('0');
+    // const [fileName, setFileName] = useState<string | null>(null);
+    // const [fileSize, setFileSize] = useState<string>('0');
 
     const processFiles = (files: FileList) => {
         if (files.length === 1) {
@@ -32,7 +32,7 @@ export default function InputForm ({setter, viewingModel}: {setter: React.Dispat
             }
             setError(null);
             const url = URL.createObjectURL(file);
-            setFileName(file.name)
+            fileNameSetter(file.name)
             setFileSize((file.size / 1024 / 1024).toFixed(1))
             setter(
                 {
@@ -63,7 +63,8 @@ export default function InputForm ({setter, viewingModel}: {setter: React.Dispat
             return;
         }
         const key = URL.createObjectURL(gltfFiles[0]);
-        setFileName(gltfFiles[0].name)
+        // console.log(key)
+        fileNameSetter(gltfFiles[0].name)
         setter({
             url: urlMap,
             key: key
