@@ -44,17 +44,12 @@
   position: relative;
   background-color: var(--bg-secondary);
   border-radius: var(--radius);
-  /* border: 1px solid red; */
 }
 #canvas > p {
-  /* display: none; */
-  /* justify-content: center; */
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  /* z-index: -1; */
-  /* border: 1px solid red; */
 }
 #canvas form {
   position: absolute;
@@ -112,7 +107,6 @@ select{
   display: flex;
   align-items: center;
   justify-content: center;
-  /* text-align: center; */
   gap: 0.5rem;
   cursor: pointer;
 }
@@ -124,9 +118,7 @@ section.canvasSection {
   height: 50vh;
   border: 1px solid var(--border);
   border-radius: var(--radius);
-
 }
-
 
 form {
   height: 100%;
@@ -134,11 +126,9 @@ form {
 }
 section.shrinkedForm {
   width: 80%;
-  /* height: 200px; */
 }
 .newInputContainer {
   display: grid;
-  /* outline: 1px solid red; */
   grid-template-columns: 4fr 1fr;
   grid-template-rows: 3rem 3rem;
   row-gap: 0.5rem;
@@ -159,13 +149,10 @@ section.shrinkedForm {
 }
 .newInputContainer img {
   width: 24px;
-  /* outline: 1px solid red; */
-
 }
 div.fileInputContainer {
   grid-row: 1 / 1;
   grid-column: 1 / 1;
-  /* outline: 1px solid blue; */
   background-color: var(--text-primary);
   color: var(--bg-primary);
   justify-content: center;
@@ -179,7 +166,6 @@ div.folderInputContainer {
 div.fileNameContainer {
   grid-row: 2 / 2;
   grid-column: 1 / span 2;
-  /* outline: 1px solid orange; */
   justify-content: flex-start;
 }
 .fileNameContainer span {
@@ -213,8 +199,6 @@ div.fileNameContainer {
   width: 0.5rem;
   height: 0.5rem;
   border-radius: 100%;
-  
-  /* margin: auto 0.5rem; */
 }
 
 .circle.yellow {
@@ -252,7 +236,6 @@ div.fileNameContainer {
 }
 .trialModalContent {
   width: 30%;
-  /* height: 6550%; */
   background-color: var(--bg-primary);
   border-radius: var(--radius);
   display: flex;
@@ -266,10 +249,7 @@ div.fileNameContainer {
   list-style: none;
   padding: 0.3rem;
 }
-.regularFooter {
-  /* margin: 8rem 0 0; */
-}
+
 .shrinkedFooter {
   margin: 0;
-  /* padding: 2rem 0; */
 }

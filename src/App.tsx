@@ -13,16 +13,17 @@ function TrialModal({display, urlSetter, fileNameSetter, fileSizeSetter}: {displ
   const handleClose = () => {
     display(false);
   }
-  const ferra = import.meta.glob('./assets/models/ferra/**/*', {eager: true, query: '?url', import:'default'});
-  const porsche = import.meta.glob('./assets/models/porsche/**/*', {eager: true, query: '?url', import:'default'});
-  const basket = import.meta.glob('./assets/models/basketball court/**/*', {eager: true, query: '?url', import:'default'});
-  const alpine = import.meta.glob('./assets/models/alpine/**/*', {eager: true, query: '?url', import:'default'});
-  const airbus = import.meta.glob('./assets/models/airbus/**/*', {eager: true, query: '?url', import:'default'});
+  const ferra = import.meta.glob<string>('./assets/models/ferra/**/*', {eager: true, query: '?url', import:'default'});
+  const porsche = import.meta.glob<string>('./assets/models/porsche/**/*', {eager: true, query: '?url', import:'default'});
+  const basket = import.meta.glob<string>('./assets/models/basketball court/**/*', {eager: true, query: '?url', import:'default'});
+  const alpine = import.meta.glob<string>('./assets/models/alpine/**/*', {eager: true, query: '?url', import:'default'});
+  const airbus = import.meta.glob<string>('./assets/models/airbus/**/*', {eager: true, query: '?url', import:'default'});
 
   const getGltfUrl = (folder: Record<string, string>) => {
     const gltfUrl = Object.entries(folder).find(([key]) => key.endsWith('.gltf'))?.[1];
     return gltfUrl;
   }
+
 
   const models = [
     {name: 'Bermuda Speedboat', url: cobra},

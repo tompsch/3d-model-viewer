@@ -74,7 +74,7 @@ function CameraLight ({intensity}: {intensity: number}) {
 }
 
 function Fallback ({setStatus}: {setStatus: React.Dispatch<React.SetStateAction<number>>}) {
-    const { progress, active, loaded, total } = useProgress();
+    const { progress, active, total } = useProgress();
     useEffect(()=>{
         setStatus(progress);
     },[progress])
