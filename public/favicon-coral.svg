@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">3D Model Inspector</title>
+  <desc id="desc">A faceted coral three-dimensional cube</desc>
+  <defs>
+    <linearGradient id="top" x1="20" y1="11" x2="45" y2="28" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFE2D5"/>
+      <stop offset="1" stop-color="#FF956B"/>
+    </linearGradient>
+    <linearGradient id="left" x1="16" y1="25" x2="33" y2="52" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FF765B"/>
+      <stop offset="1" stop-color="#D43B4E"/>
+    </linearGradient>
+    <linearGradient id="right" x1="33" y1="25" x2="49" y2="52" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F15150"/>
+      <stop offset="1" stop-color="#9D1D4B"/>
+    </linearGradient>
+  </defs>
+
+  <path d="M32 3.5 60 18.75 32 34 4 18.75 32 3.5Z" fill="url(#top)"/>
+  <path d="M4 22.5 30 36.65v24.85L4 47.35V22.5Z" fill="url(#left)"/>
+  <path d="M60 22.5 34 36.65v24.85l26-14.15V22.5Z" fill="url(#right)"/>
+</svg>
