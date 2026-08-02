@@ -8,7 +8,7 @@ export default defineConfig({
     react(),
     babel({ presets: [reactCompilerPreset()] })
   ],
-  base: '/',
+  base: '/3d-model-viewer/',
   // build: {
   //   // Importante para Three.js: evita que Vite intente procesar o inlinear archivos pequeños
   //   assetsInlineLimit: 0 
