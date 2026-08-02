@@ -8,5 +8,9 @@ export default defineConfig({
     react(),
     babel({ presets: [reactCompilerPreset()] })
   ],
-  
+  // base: '/',
+  // build: {
+  //   // Importante para Three.js: evita que Vite intente procesar o inlinear archivos pequeños
+  //   assetsInlineLimit: 0 
+  // }
 })

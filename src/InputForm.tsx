@@ -6,14 +6,14 @@ import folder from "./assets/folder.svg"
 import ar_view from "./assets/ar_view.svg"
 import drop from "./assets/rotate-3d.svg"
 
-export default function InputForm ({setter, viewingModel, fileName, fileNameSetter, fileSize, setFileSize}: {setter: React.Dispatch<React.SetStateAction<Url>>, viewingModel: boolean, fileName: string | null, fileNameSetter: React.Dispatch<React.SetStateAction<string | null>>, fileSize: string, setFileSize: React.Dispatch<React.SetStateAction<string>>}) {
+export default function InputForm (
+    {setter, viewingModel, fileName, fileNameSetter, fileSize, setFileSize, error, setError}:
+    {setter: React.Dispatch<React.SetStateAction<Url>>, viewingModel: boolean, fileName: string | null, fileNameSetter: React.Dispatch<React.SetStateAction<string | null>>, fileSize: string, setFileSize: React.Dispatch<React.SetStateAction<string>>, error: string | null, setError: React.Dispatch<React.SetStateAction<string | null>>}) {
     const fileInput = useRef<HTMLInputElement>(null);
     const folderInput = useRef<HTMLInputElement>(null);
     const [isDragging, setIsDragging] = useState<boolean>(false);
-    const [error, setError] = useState<string | null>(null);
+    // const [error, setError] = useState<string | null>(null);
     const [folderInputCheckbox, setFolderInputCheckbox] = useState<boolean>(false);
-    // const [fileName, setFileName] = useState<string | null>(null);
-    // const [fileSize, setFileSize] = useState<string>('0');
 
     const processFiles = (files: FileList) => {
         if (files.length === 1) {
@@ -123,7 +123,8 @@ export default function InputForm ({setter, viewingModel, fileName, fileNameSett
         )
     }
         return(
-            !viewingModel ? <form>
+            !viewingModel ? 
+            <form>
                 <div className={`dropZone${isDragging ? ' dragging' : ''}${folderInputCheckbox ? ' noDrag' : ''}`}
                     onClick={()=>{
                         !folderInputCheckbox ? fileInput.current?.click() : folderInput.current?.click()}}
@@ -154,6 +155,7 @@ export default function InputForm ({setter, viewingModel, fileName, fileNameSett
             </form>
         :
         <form>
+            {error && <p className='error'>{error}</p>}
             <div className='newInputContainer'>
                 <div className='fileInputContainer' onClick={()=>fileInput.current?.click()}>
                     <img src={upload} />

@@ -2,14 +2,14 @@ import './App.css'
 import { useState } from 'react';
 import Viewer from './Viewer';
 import InputForm from './InputForm';
-import cobra from './assets/models/Cobra Keyshot.glb?url'
+import cobra from './assets/models/Bermuda Cobra Speedboat.glb?url'
 
 export type Url = {
   url: string | Record<string,string>,
   key: string
 } | null;
 
-function TrialModal({display, urlSetter, fileNameSetter, fileSizeSetter}: {display: React.Dispatch<React.SetStateAction<boolean>>, urlSetter: React.Dispatch<React.SetStateAction<Url>>, fileNameSetter: React.Dispatch<React.SetStateAction<string | null>>, fileSizeSetter: React.Dispatch<React.SetStateAction<string>>}) {
+function TrialModal({display, urlSetter, fileNameSetter, fileSizeSetter, setError}: {display: React.Dispatch<React.SetStateAction<boolean>>, urlSetter: React.Dispatch<React.SetStateAction<Url>>, fileNameSetter: React.Dispatch<React.SetStateAction<string | null>>, fileSizeSetter: React.Dispatch<React.SetStateAction<string>>, setError: React.Dispatch<React.SetStateAction<string | null>>}) {
   const handleClose = () => {
     display(false);
   }
@@ -19,30 +19,39 @@ function TrialModal({display, urlSetter, fileNameSetter, fileSizeSetter}: {displ
   const alpine = import.meta.glob<string>('./assets/models/alpine/**/*', {eager: true, query: '?url', import:'default'});
   const airbus = import.meta.glob<string>('./assets/models/airbus/**/*', {eager: true, query: '?url', import:'default'});
 
-  const getGltfUrl = (folder: Record<string, string>) => {
-    const gltfUrl = Object.entries(folder).find(([key]) => key.endsWith('.gltf'))?.[1];
-    return gltfUrl;
+  function buildFileMap(modelUrls: Record<string, string>): Record<string, string> {
+    const map: Record<string, string> = {};
+    for (const [originalPath, finalUrl] of Object.entries(modelUrls)) {
+      const filename = originalPath.split('/').pop()!;
+      map[filename] = finalUrl;
+    }
+    return map;
   }
-
 
   const models = [
     {name: 'Bermuda Speedboat', url: cobra},
-    {name: 'Ferrari Formula 1', url: getGltfUrl(ferra), folder: ferra},
-    {name: 'Porsche 911', url: getGltfUrl(porsche), folder: porsche},
-    {name: 'Basketball Court', url: getGltfUrl(basket), folder: basket},
-    {name: 'Alpine Racing A424', url: getGltfUrl(alpine), folder: alpine},
-    {name: 'Airbus A380', url: getGltfUrl(airbus), folder: airbus}
+    {name: 'Ferrari Formula 1', url: buildFileMap(ferra), folder: ferra},
+    {name: 'Porsche 911', url: buildFileMap(porsche), folder: porsche},
+    {name: 'Basketball Court', url: buildFileMap(basket), folder: basket},
+    {name: 'Alpine Racing A424', url: buildFileMap(alpine), folder: alpine},
+    {name: 'Airbus A380', url: buildFileMap(airbus), folder: airbus}
   ]
 
-  const handleTrial = async (model: {name: string, url: string | undefined, folder?: Record<string, string>}) => {
+  const handleTrial = async ({model, setError}: {model: {name: string, url: string | undefined | Record<string, string>, folder?: Record<string, string>}, setError: React.Dispatch<React.SetStateAction<string | null>>}) => {
     display(false);
+    setError(null);
     if(!model.url) return;
 
-    urlSetter({url: model.url, key: model.url});
-    const name = model.url.split('/').pop()?.replaceAll("%20", " ").split("?")[0] || null;
+    let gltfUrl = model.url;
+    if(typeof gltfUrl !== 'string') {
+      gltfUrl = Object.entries(model.url).find(([key]) => key.endsWith('.gltf'))?.[1] ?? 'noKey';
+    }
+    urlSetter({url: model.url, key: gltfUrl as string});
+    const nameArray = gltfUrl.split('/').pop()?.replaceAll("%20", " ").split("?")[0].split(/[\-\.]/) || ['noName'];
+    const name = nameArray[0] + "." + nameArray[2]
     fileNameSetter(name);
     try { 
-      if(model.url.includes('.gltf')) {
+      if(gltfUrl.includes('.gltf')) {
         if(model.folder) {
           const modelFolder = model.folder;
           let totalSize = 0;
@@ -58,7 +67,7 @@ function TrialModal({display, urlSetter, fileNameSetter, fileSizeSetter}: {displ
           fileSizeSetter(sizeInMB);
         }
        } else {
-      const response = await fetch(model.url, { method: 'HEAD' });
+      const response = await fetch(gltfUrl, { method: 'HEAD' });
       const bytes = response.headers.get('content-length');
       if (bytes) {
         const sizeInMB = (parseInt(bytes) / 1024 / 1024).toFixed(1);
@@ -74,7 +83,7 @@ function TrialModal({display, urlSetter, fileNameSetter, fileSizeSetter}: {displ
         <h3>Try me with these models!</h3>
         <ul>
           {models.map((model, index) => (
-            <li key={index} onClick={()=>handleTrial(model)}>
+            <li key={index} onClick={()=>handleTrial({model, setError})}>
               {model.name}
             </li>
           ))}
@@ -90,6 +99,8 @@ function App() {
   const [trialModal, setTrialModal] = useState<boolean>(false);
   const [fileName, setFileName] = useState<string | null>(null);
   const [fileSize, setFileSize] = useState<string>('0');
+  const [error, setError] = useState<string | null>(null);
+
 
 
   let text = 'no file'
@@ -121,8 +132,9 @@ function App() {
             fileNameSetter={setFileName}
             fileSize={fileSize}
             setFileSize={setFileSize}
+            error={error}
+            setError={setError}
           />
-          {/* <InputForm setter={setFileURL} viewingModel={true}/> */}
         </section>
         <section className={!fileURL ? 'trial' : 'shrinkedTrial'}>
           <h3 onClick={()=>{setTrialModal(true)}}>Try me with loaded models!</h3>
@@ -132,6 +144,7 @@ function App() {
               urlSetter={setFileURL}
               fileNameSetter={setFileName}
               fileSizeSetter={setFileSize}
+              setError={setError}
             />}
         </section>
       </main>
