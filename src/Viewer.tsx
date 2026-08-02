@@ -148,7 +148,7 @@ export default function Viewer ({url, setStatus}: {url: Url, setStatus: React.Di
             </Canvas>
             <Fallback setStatus={setStatus}/>
             <form className={displayControls ? 'show' : 'hide'}>
-                <label htmlFor="enviroment">Enviroment</label>
+                <label htmlFor="enviroment">Environment</label>
                 <select name='enviroment' onChange={handleEnviroment}>
                     <option value="empty_warehouse_01_1k">Warehouse</option>
                     <option value="studio_small_03_1k">Studio</option>
