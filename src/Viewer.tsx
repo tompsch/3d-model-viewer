@@ -21,7 +21,7 @@ function Model ({url, controlsRef} : {url: string | Record<string,string>, contr
     const gltf = useLoader(GLTFLoader, gltfUrl, (loader)=>{
 
         const dracoLoader = new DRACOLoader();
-        dracoLoader.setDecoderPath('/draco/');
+        dracoLoader.setDecoderPath('./draco/');
         loader.setDRACOLoader(dracoLoader);
 
         if(typeof url !== 'string') {
@@ -84,7 +84,7 @@ function Fallback ({setStatus}: {setStatus: React.Dispatch<React.SetStateAction<
 
 export default function Viewer ({url, setStatus}: {url: Url, setStatus: React.Dispatch<React.SetStateAction<number>>}) {
     const controlsRef = useRef<OrbitControlsImpl>(null);
-    const [enviroment, setEnviroment] = useState('/hdri/empty_warehouse_01_1k.hdr');
+    const [enviroment, setEnviroment] = useState('./hdri/empty_warehouse_01_1k.hdr');
     const [ambientLight, setAmbientLight] = useState(0.2);
     const [directionalLight, setDirectionalLight] = useState(0.2);
     const [displayControls, setDisplayControls] = useState(true);
@@ -93,7 +93,7 @@ export default function Viewer ({url, setStatus}: {url: Url, setStatus: React.Di
             setEnviroment('');
             return;
         }
-        setEnviroment(`/hdri/${e.target.value}.hdr`);
+        setEnviroment(`./hdri/${e.target.value}.hdr`);
     }
 
     const handleAmbientLight = (e: React.ChangeEvent<HTMLInputElement>) => {
