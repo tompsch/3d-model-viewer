@@ -1,75 +1,48 @@
-# React + TypeScript + Vite
+# 3D Model Inspector
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A simple, browser-based viewer for previewing and inspecting 3D models.
 
-Currently, two official plugins are available:
+Upload .glb or .gltf files—or load an entire folder—and explore your models directly in the browser. No installation, upload to a server, or account required.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Features
 
-## React Compiler
+- Preview .glb and .gltf 3D models
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+- Drag and drop files directly into the viewer
 
-Note: This will impact Vite dev & build performances.
+- Load a folder containing models and assets
 
-## Expanding the ESLint configuration
+- Runs entirely in the browser
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- Clean, lightweight interface
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Live demo
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+[Open 3D Model Inspector](https://tompsch.github.io/3d-model-viewer/)
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Getting started
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+1. Open the live viewer.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+2. Drag a .glb file into the upload area, or click *Select 3D files*.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+3. For models that use external textures or assets, enable *Have a folder?* and select the folder containing them.
+
+4. Inspect your model in the viewer.
+   
+5. Edit your view with environment and light settings. 
+   
+
+## Supported formats
+
+.GLB
+
+.GLTF
+
+## Privacy
+
+Your files are processed locally in your browser. Nothing is uploaded to a server.
+
+## Author
+
+Designed and built by Tomás Puebla Schildknecht
